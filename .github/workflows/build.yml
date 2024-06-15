@@ -46,4 +46,13 @@ jobs:
         env:
                   DOCKER_CLI_ACI: 1
 
-
+  deploy: 
+    needs: build
+    runs-on: [self-hosted]  
+    steps:
+      - name: Pull the docker image
+        run: docker pull rosariaquenum/netflix-rosa:latest
+      - name: Trivy image scan
+        run: trivy image rosariaquenum/netflix-rosa:latest
+      - name: Run the container netflix-rosa
+        run: docker run -d --name netflix-rosa -p 8081:80 rosariaquenum/netflix-rosa:latest
